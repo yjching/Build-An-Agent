@@ -1,5 +1,6 @@
 import re
 import os
+os.getcwd()
 import requests
 import json
 import httpx
@@ -7,6 +8,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(dotenv_path="Build-An-Agent/.env")
 
 from clients.main import hello_world
+from clients.ollama import OllamaClient
 hello_world()
 
 system_prompt = """

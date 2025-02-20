@@ -10,6 +10,7 @@ class AzureOpenAIClient:
         self.api_version = api_version
         self.system_prompt = system_prompt
         self.response = None
+
     def create_prompt_from_string(self, prompt):
         messages = [
             {"role": "system", "content": f"{self.system_prompt}"},
