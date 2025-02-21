@@ -1,16 +1,11 @@
 import re
 import os
-os.getcwd()
-import requests
-import json
-import httpx
 from dotenv import load_dotenv, find_dotenv
-load_dotenv(dotenv_path="Build-An-Agent/.env")
+load_dotenv(dotenv_path=".env")
 
-from clients.main import hello_world
 from clients.azure_openai import AzureOpenAIClient
+from tools.main import calculate, wikipedia
 # from clients.ollama import OllamaClient
-hello_world()
 
 system_prompt = """
 You run in a loop of Thought, Action, PAUSE, Observation.
@@ -51,17 +46,6 @@ client = AzureOpenAIClient(
     api_version="2024-08-01-preview",
     system_prompt = system_prompt
 )
-
-def calculate(what):
-    return eval(what)
-
-def wikipedia(q):
-    return httpx.get("https://en.wikipedia.org/w/api.php", params={
-        "action": "query",
-        "list": "search",
-        "srsearch": q,
-        "format": "json"
-    }).json()["query"]["search"][0]
 
 def run_agent(client, question, no_times):
     known_actions = {
