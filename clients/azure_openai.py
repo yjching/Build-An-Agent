@@ -2,13 +2,15 @@ import requests
 import re
 import json
 
-class AzureOpenAIClient:
-    def __init__(self, api_key, endpoint, deployment_name, api_version, system_prompt):
+from clients.main import BaseClient
+
+class AzureOpenAIClient(BaseClient):
+    def __init__(self, api_key, endpoint, deployment_name, api_version, system_prompt=""):
+        super().__init__(system_prompt)
         self.api_key = api_key
         self.endpoint = endpoint
         self.deployment_name = deployment_name
         self.api_version = api_version
-        self.system_prompt = system_prompt
         self.response = None
 
     def create_prompt_from_string(self, prompt):

@@ -9,4 +9,4 @@ def wikipedia(q):
         "list": "search",
         "srsearch": q,
         "format": "json"
-    }).json()["query"]["search"][0]
+    }).json()["query"]["search"][0]["snippet"]

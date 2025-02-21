@@ -47,6 +47,8 @@ client = AzureOpenAIClient(
     system_prompt = system_prompt
 )
 
+client.system_prompt
+
 def run_agent(client, question, no_times):
     known_actions = {
         "wikipedia": wikipedia,
@@ -76,7 +78,7 @@ def run_agent(client, question, no_times):
 question = "5 ** 3"
 run_agent(client, question, 2)
 
-question = "Where is SAS Institute located?"
+question = "What borders UK?"
 run_agent(client, question, 5)
 
 def run_agent_v2(client, question, no_times):
@@ -110,12 +112,19 @@ question = "Where is SAS institute?"
 run_agent_v2(client, question, 5)
 
 
+base_client = AzureOpenAIClient(
+    api_key = os.getenv("azure_openai_key"), 
+    endpoint = "ssayjc.openai.azure.com",
+    deployment_name="ssayjc-gpt-4o",
+    api_version="2024-08-01-preview",
+    system_prompt = ""
+)
 
-def wikipedia_test(q):
-    return httpx.get("https://en.wikipedia.org/w/api.php", params={
-        "action": "query",
-        "list": "search",
-        "srsearch": q,
-        "format": "json"
-    }).json()
-wikipedia_test("SAS Institute")
+question = "Where is SAS Institute?"
+saved_response = base_client.generate_completion(question)
+saved_response
+
+evaluation_client = base_client
+evaluation_client.system_prompt
+
+evaluation_client.system_prompt(f"Evaluate how good the following response is, given the question: {question}")
