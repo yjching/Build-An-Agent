@@ -125,6 +125,8 @@ saved_response = base_client.generate_completion(question)
 saved_response
 
 evaluation_client = base_client
-evaluation_client.system_prompt
+evaluation_client.system_prompt = f"""Evaluate how good the following response is, given the question. If the response is good and does not need changes, output <OK>
+Question: {question}.
+Response: """
 
-evaluation_client.system_prompt(f"Evaluate how good the following response is, given the question: {question}")
+evaluation_client.generate_completion(saved_response)
