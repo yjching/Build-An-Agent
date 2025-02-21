@@ -8,7 +8,8 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(dotenv_path="Build-An-Agent/.env")
 
 from clients.main import hello_world
-from clients.ollama import OllamaClient
+from clients.azure_openai import AzureOpenAIClient
+# from clients.ollama import OllamaClient
 hello_world()
 
 system_prompt = """
@@ -42,19 +43,6 @@ You then output:
 
 Answer: The capital of China is Beijing.
 """.strip()
-
-# Question: What is 4 * 5?
-# Thought: I should calculate using the numbers provided. 
-# Action: calculate: 4*5
-# PAUSE
-
-# You will be called again with this:
-
-# Observation: 4 times 5 is 20.
-
-# You then output:
-
-# Answer: 20.
 
 client = AzureOpenAIClient(
     api_key = os.getenv("azure_openai_key"), 
