@@ -12,3 +12,6 @@ Pipeline of an Agent Run - the Thought Process:
 * Termination?
   * Does my evaluation conclude nothing needs to change?
   * Have I executed the tool?
+
+TODO:
+* Pipelines and modularity of agent steps

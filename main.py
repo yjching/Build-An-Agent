@@ -39,78 +39,6 @@ You then output:
 Answer: The capital of China is Beijing.
 """.strip()
 
-client = AzureOpenAIClient(
-    api_key = os.getenv("azure_openai_key"), 
-    endpoint = "ssayjc.openai.azure.com",
-    deployment_name="ssayjc-gpt-4o",
-    api_version="2024-08-01-preview",
-    system_prompt = system_prompt
-)
-
-client.system_prompt
-
-def run_agent(client, question, no_times):
-    known_actions = {
-        "wikipedia": wikipedia,
-        "calculate": calculate,
-    }
-    i = 0
-    # Define the regular expression pattern
-    action_re = re.compile(r'Action:\s*(\w+)\s*:\s*(.*)')
-    next_prompt = question
-    while i < no_times:
-        i+=1
-        result = client.generate_completion(next_prompt)
-        print(i)
-        print(result)
-        # Search for the pattern in the input string
-        actions = [action_re.search(a) for a in result.split('\n') if action_re.search(a)]
-        # Check if a match was found and extract the captured group
-        if actions:
-            action, action_input = actions[0].groups()
-            cleaned_string = action_input.replace("PAUSE", "").strip()
-            observation = known_actions[action](cleaned_string)
-            next_prompt = "Observation: {}".format(observation)
-            print(next_prompt)
-        else:
-            return
-
-question = "5 ** 3"
-run_agent(client, question, 2)
-
-question = "What borders UK?"
-run_agent(client, question, 5)
-
-def run_agent_v2(client, question, no_times):
-    known_actions = {
-        "wikipedia": wikipedia,
-        "calculate": calculate,
-    }
-    i = 0
-    # Define the regular expression pattern
-    action_re = re.compile(r'Action:\s*(\w+)\s*:\s*(.*)')
-    next_prompt = question
-    while i < no_times:
-        i+=1
-        result = client.generate_completion(next_prompt)
-        print(i)
-        print(result)
-        # Search for the pattern in the input string
-        actions = [action_re.search(a) for a in result.split('\n') if action_re.search(a)]
-        # Check if a match was found and extract the captured group
-        if actions:
-            action, action_input = actions[0].groups()
-            cleaned_string = action_input.replace("PAUSE", "").strip()
-            observation = known_actions[action](cleaned_string)
-            next_prompt = question+" Observation: {}".format(observation)
-            print(next_prompt)
-        else:
-            return
-        # return
-
-question = "Where is SAS institute?"
-run_agent_v2(client, question, 5)
-
 
 base_client = AzureOpenAIClient(
     api_key = os.getenv("azure_openai_key"), 
@@ -119,14 +47,36 @@ base_client = AzureOpenAIClient(
     api_version="2024-08-01-preview",
     system_prompt = ""
 )
+eval_client = AzureOpenAIClient(
+        api_key = os.getenv("azure_openai_key"), 
+        endpoint = "ssayjc.openai.azure.com",
+        deployment_name="ssayjc-gpt-4o",
+        api_version="2024-08-01-preview",
+        system_prompt=""
+)
 
-question = "Where is SAS Institute?"
-saved_response = base_client.generate_completion(question)
-saved_response
+def run_reflection(client, eval_client, question, n_iter=10):
+    eval_client.system_prompt = f"""Evaluate how good the following response is, given the question. If the response ise poor, respond with your evaluation on what to improve with the response.
+    If the response is good and does not need changes, append the following to the end of your response: <OK>. 
+    Question: {question}.
+    Response: """
+    step = 0
+    while step < n_iter:
+        step+=1
+        response = client.generate_completion(question)
+        print(f"Responder: My initial response is: {response}")
+        print(f"Responder: I will send this to the evaluator")
+        ## Save to client memory
+        evaluation_of_response = eval_client.generate_completion(response)
+        print(f"Evaluator: My evaluation is {evaluation_of_response}")
+        ## Save to evaluation memory
+        if "<OK>" in evaluation_of_response:
+            print("Stop reflection loop.")
+            break
+        else: 
+            question = response
+    return response
 
-evaluation_client = base_client
-evaluation_client.system_prompt = f"""Evaluate how good the following response is, given the question. If the response is good and does not need changes, output <OK>
-Question: {question}.
-Response: """
 
-evaluation_client.generate_completion(saved_response)
+run_reflection(base_client, eval_client, "Other than knock knock jokes, what else did I ask related to Camille?")
+

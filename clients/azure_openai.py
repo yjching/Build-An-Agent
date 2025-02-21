@@ -11,14 +11,6 @@ class AzureOpenAIClient(BaseClient):
         self.endpoint = endpoint
         self.deployment_name = deployment_name
         self.api_version = api_version
-        self.response = None
-
-    def create_prompt_from_string(self, prompt):
-        messages = [
-            {"role": "system", "content": f"{self.system_prompt}"},
-            {"role": "user", "content": f"{prompt}"}
-        ]
-        return messages
 
     def generate_completion(self, prompt):
         messages = self.create_prompt_from_string(prompt)
@@ -39,5 +31,12 @@ class AzureOpenAIClient(BaseClient):
 
         # Make the POST request
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        # print(response.json())
         cleaned_response = re.sub(r'\n+', ' ', response.json()['choices'][0]['message']['content'])
+
+        ## Append to memory
+        self.conversation_memory.append({
+            "role": "assistant",
+            "content": cleaned_response
+        })
         return cleaned_response
