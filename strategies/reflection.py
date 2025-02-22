@@ -1,3 +1,6 @@
+## Pattern 1
+## Evaluator LLM evaluates response from initial responder and iterates until sufficient.
+
 from clients.client import BaseClient
 
 class ReflectionStrategy():

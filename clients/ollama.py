@@ -12,4 +12,9 @@ class OllamaClient(BaseClient):
         messages = self.create_prompt_from_string(prompt)
 
         response = chat(self.model_name, messages)
-        return response['message']['content']
+        returned_response = response['message']['content']
+        self.conversation_memory.append({
+            "role": "assistant",
+            "content": returned_response
+        })
+        return returned_response

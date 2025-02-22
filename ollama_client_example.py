@@ -10,3 +10,4 @@ base_client = OllamaClient(
 )
 
 base_client.generate_completion("What is the capital of France?")
+
