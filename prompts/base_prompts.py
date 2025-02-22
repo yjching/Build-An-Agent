@@ -12,7 +12,14 @@ Here are the available tools:
 
 <tools> {
     "name": "get_space_news",
-    "description": "Get the latest news on space",
+    "description": "Return the latest articles on space, where n_articles (int) specifies how many articles to return.",
+    "parameters": {
+        "properties": {
+            "n_articles": {
+                "type": "int"
+            }
+        }
+    }
 }
 </tools>
 """
