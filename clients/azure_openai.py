@@ -2,7 +2,7 @@ import requests
 import re
 import json
 
-from clients.main import BaseClient
+from clients.client import BaseClient
 
 class AzureOpenAIClient(BaseClient):
     def __init__(self, api_key, endpoint, deployment_name, api_version, system_prompt=""):

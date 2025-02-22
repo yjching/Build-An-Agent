@@ -22,7 +22,7 @@ eval_client = AzureOpenAIClient(
         system_prompt=""
 )
 
-from strategies.main import ReflectionStrategy
+from strategies.reflection import ReflectionStrategy
 
 agent = ReflectionStrategy(base_client, eval_client)
 agent.run("Which knock knock joke that you wrote for Camille is your favourite?")

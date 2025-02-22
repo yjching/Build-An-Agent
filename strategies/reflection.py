@@ -1,4 +1,4 @@
-from clients.base import BaseClient
+from clients.client import BaseClient
 
 class ReflectionStrategy():
     def __init__(self, base_client, eval_client):
