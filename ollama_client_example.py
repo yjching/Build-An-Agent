@@ -17,3 +17,9 @@ question = "What is the latest news on space? Return at least 5 articles."
 
 agent.run(question, [get_space_news])
 
+def hello_world():
+    print("hello world")
+    print("second line")
+
+
+hello_world()

@@ -1,6 +1,5 @@
 from typing import Optional
 from ollama import chat
-from ollama import ChatResponse
 from clients.client import BaseClient
 
 class OllamaClient(BaseClient):
