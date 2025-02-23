@@ -1,6 +1,4 @@
 from strategies.base_strategy import BaseStrategy
-import duckdb
-
 
 class SQLExecutor(BaseStrategy):
     def __init__(self, base_client, db_connection):
