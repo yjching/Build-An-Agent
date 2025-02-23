@@ -8,4 +8,3 @@ class ReActStrategy(SingleToolStrategy):
         while step < n_iter:
             step+=1
             saved_response = self.base_client.generate_completion(question)
-            
