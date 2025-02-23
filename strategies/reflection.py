@@ -1,20 +1,14 @@
-## Pattern 1
-## Evaluator LLM evaluates response from initial responder and iterates until sufficient.
+'''
+Pattern 1
+Evaluator LLM evaluates response from initial responder and iterates until sufficient.
+'''
 
-from clients.client import BaseClient
+from strategies.base_strategy import BaseStrategy
 
-class ReflectionStrategy():
+class ReflectionStrategy(BaseStrategy):
     def __init__(self, base_client, eval_client):
-        self.base_client = base_client
+        super().__init__(base_client)
         self.eval_client = eval_client
-    @property
-    def clients(self):
-        return self._clients
-
-    @clients.setter
-    def clients(self, value):
-        self._clients = value
-    
     def run(self, question, n_iter: int = 10):
         self.eval_client.system_prompt = f"""Evaluate how good the following response is, given the question. If the response ise poor, respond with your evaluation on what to improve with the response.
         If the response is good and does not need changes, append the following to the end of your response: <OK>. 
@@ -25,7 +19,7 @@ class ReflectionStrategy():
             step+=1
             response = self.base_client.generate_completion(question)
             print(f"Responder: My initial response is: {response}")
-            print(f"Responder: I will send this to the evaluator")
+            print("Responder: I will send this to the evaluator")
             ## Save to client memory
             evaluation_of_response = self.eval_client.generate_completion(response)
             print(f"Evaluator: My evaluation is {evaluation_of_response}")
@@ -33,6 +27,5 @@ class ReflectionStrategy():
             if "<OK>" in evaluation_of_response:
                 print("Stop reflection loop.")
                 break
-            else: 
-                question = response
+            question = response
         return response

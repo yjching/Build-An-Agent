@@ -1,27 +1,25 @@
-## Pattern 2
-## LLM calls Tool
+'''
+Pattern 2
+LLM calls Tool
+'''
+
 import re
 import json
 
-class SingleToolStrategy():
-    def __init__(self, base_client):
-        self.base_client = base_client
-    @property
-    def clients(self):
-        return self._clients
+from strategies.base_strategy import BaseStrategy
 
-    @clients.setter
-    def clients(self, value):
-        self._clients = value
-    
-    def set_available_tools(self, tools_list: list):
+class SingleToolStrategy(BaseStrategy):
+    def __init__(self, base_client, tools_list: list):
+        super().__init__(base_client)
+        self.tools_list = tools_list
+
+    def set_available_tools(self):
         available_tools = {}
-        for item in tools_list:
+        for item in self.tools_list:
             available_tools[item.__name__] = item
         return available_tools
-    
-    def run(self, prompt, tools_list: list):
-        available_tools = self.set_available_tools(tools_list)
+    def run(self, prompt):
+        available_tools = self.set_available_tools()
 
         saved_response = self.base_client.generate_completion(prompt)
 
@@ -31,5 +29,4 @@ class SingleToolStrategy():
         pattern = r'</?tool_call>'
         clean_response = re.sub(pattern, '', saved_response)
         parsed_output = json.loads(clean_response)
-        # available_tools[parsed_output['name']](**parsed_output['arguments'])
         return available_tools[parsed_output['name']](**parsed_output['arguments'])
