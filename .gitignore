@@ -1,3 +1,5 @@
 .env
 __pycache__/
 .vscode/
+file.db
+file.db.wal
