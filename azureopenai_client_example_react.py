@@ -18,7 +18,8 @@ import pandas as pd
 from utils.data_utils import create_df_load_duckdb
 
 con = duckdb.connect(r"database/file.db")
-## Load data example 
+
+# Load data example 
 # data = [
 #     {"id": 1, "name": "Will", "referee_id": None},
 #     {"id": 2, "name": "Jane", "referee_id": None},
@@ -27,6 +28,7 @@ con = duckdb.connect(r"database/file.db")
 #     {"id": 5, "name": "Zack", "referee_id": 1},
 #     {"id": 6, "name": "Mark", "referee_id": 2}
 # ]
+
 # create_df_load_duckdb("Customer", data, con)
 
 base_client = AzureOpenAIClient(
@@ -39,4 +41,4 @@ base_client = AzureOpenAIClient(
 
 agent = SQLReactStrategy(base_client, con)
 
-agent.run("From the Views table, find all authors that viewed at least one of their own articles.")
+agent.run("From the Customer table, find the names of the customer that are not referred by the customer with id = 2.")
